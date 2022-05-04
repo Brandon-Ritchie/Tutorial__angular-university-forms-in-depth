@@ -8,6 +8,7 @@
           type="email"
           ngModel
           #email="ngModel"
+          required
           name="email"
           placeholder="Email"
         />
@@ -19,6 +20,7 @@
           ngModel
           #password="ngModel"
           name="password"
+          required
           type="password"
           placeholder="Password"
         />
@@ -30,7 +32,7 @@
     </form>
 
     <div class="form-val">
-      {{ email.value + " " + password.value }}
+      {{ email.valid }}
     </div>
   </mat-card-content>
 </mat-card>
