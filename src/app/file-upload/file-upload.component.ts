@@ -15,7 +15,7 @@ import { noop, of } from "rxjs";
   templateUrl: "file-upload.component.html",
   styleUrls: ["file-upload.component.scss"],
 })
-export class FileUploadComponent {
+export class FileUploadComponent implements ControlValueAccessor {
   @Input()
   requiredFileType: string;
 
@@ -25,7 +25,18 @@ export class FileUploadComponent {
 
   uploadProgress: number;
 
+  onChange = (fileName: string) => {};
+
+  onTouched = () => {};
+
+  disabled: boolean = false;
+
   constructor(private http: HttpClient) {}
+
+  onClick(fileUpload: HTMLInputElement) {
+    this.onTouched();
+    fileUpload.click();
+  }
 
   onFileSelected(event) {
     const file: File = event.target.files[0];
@@ -58,8 +69,26 @@ export class FileUploadComponent {
             this.uploadProgress = Math.round(
               100 * (event.loaded / event.total)
             );
+          } else if (event.type == HttpEventType.Response) {
+            this.onChange(this.fileName);
           }
         });
     }
+  }
+
+  writeValue(value: any) {
+    this.fileName = value;
+  }
+
+  registerOnChange(onChange: any) {
+    this.onChange = onChange;
+  }
+
+  registerOnTouched(onTouched: any): void {
+    this.onTouched = onTouched;
+  }
+
+  setDisabledState(disabled: boolean): void {
+    this.disabled = disabled;
   }
 }
