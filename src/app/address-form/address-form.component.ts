@@ -15,10 +15,21 @@ import { noop, Subscription } from "rxjs";
   selector: "address-form",
   templateUrl: "./address-form.component.html",
   styleUrls: ["./address-form.component.scss"],
+  providers: [
+    {
+      provide: NG_VALUE_ACCESSOR,
+      multi: true,
+      useExisting: AddressFormComponent,
+    },
+  ],
 })
-export class AddressFormComponent {
+export class AddressFormComponent implements ControlValueAccessor, OnDestroy {
   @Input()
   legend: string;
+
+  onTouched = () => {};
+
+  onChangeSub: Subscription;
 
   form: FormGroup = this.fb.group({
     addressLine1: [null, [Validators.required]],
@@ -28,4 +39,30 @@ export class AddressFormComponent {
   });
 
   constructor(private fb: FormBuilder) {}
+
+  writeValue(value: any) {
+    if (value) {
+      this.form.setValue(value);
+    }
+  }
+
+  registerOnTouched(onTouched: any) {
+    this.onTouched = onTouched;
+  }
+
+  ngOnDestroy(): void {
+    this.onChangeSub.unsubscribe();
+  }
+
+  registerOnChange(onChange: any): void {
+    this.onChangeSub = this.form.valueChanges.subscribe(onChange);
+  }
+
+  setDisabledState(disabled: boolean): void {
+    if (disabled) {
+      this.form.disable();
+    } else {
+      this.form.enable();
+    }
+  }
 }

@@ -1,5 +1,5 @@
 <div [formGroup]="form">
-  <address-form legend="Address"></address-form>
+  <address-form legend="Address" formControlName="address"></address-form>
 
   <mat-form-field>
     <input matInput placeholder="Course Title" formControlName="title" #title />
@@ -47,6 +47,8 @@
   </mat-form-field>
 </div>
 
+<div val="form-val">Form Validity State: {{ form.valid | json }}</div>
+<br />
 <div val="form-val">
   {{ form.value | json }}
 </div>
